@@ -1,1 +1,1 @@
-navigate to chapter1 then do the command 'webpack -w'
+navigate to a chapter then do the command 'webpack -w'
