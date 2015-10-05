@@ -11,7 +11,7 @@ class App extends React.Component {
         <List title="In Progress" cards={
          this.props.cardsList.filter((card) => card.status == "in-progress")
         } />
-        <List title="Done" cards={
+        <List tle="Done" cards={
          this.props.cardsList.filter((card) => card.status == "done") } />
       </div>
     )
@@ -59,6 +59,15 @@ class List extends React.Component {
     )
   }
 }
+
+List.propTypes = {
+  title: React.PropTypes.string
+}
+
+List.defaultProps = {
+  title: "New Column"
+}
+
 
 class Card extends React.Component {
   constructor() {

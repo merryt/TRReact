@@ -78,7 +78,7 @@
 	        React.createElement(List, { title: "In Progress", cards: this.props.cardsList.filter(function (card) {
 	            return card.status == "in-progress";
 	          }) }),
-	        React.createElement(List, { title: "Done", cards: this.props.cardsList.filter(function (card) {
+	        React.createElement(List, { tle: "Done", cards: this.props.cardsList.filter(function (card) {
 	            return card.status == "done";
 	          }) })
 	      );
@@ -156,6 +156,14 @@
 
 	  return List;
 	})(React.Component);
+
+	List.propTypes = {
+	  title: React.PropTypes.string
+	};
+
+	List.defaultProps = {
+	  title: "New Column"
+	};
 
 	var Card = (function (_React$Component4) {
 	  _inherits(Card, _React$Component4);
