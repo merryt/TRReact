@@ -1,22 +1,14 @@
 import React, { Component } from 'react';
 
-class CheckList extends Component {
+class CheckList extends React.Component {
 
-render() {
+render(){
 
-let tasks = this.props.tasks.map((task) => (
+var tasks = this.props.tasks.map((task) => {
 
-<li className="checklist__task">
+//return <Task key={task.id} name={task.name} done={task.done} />
 
-<input type="checkbox" defaultChecked={task.done} />
-
-{task.name}
-
-<a href="#" className="checklist__task--remove" />
-
-</li>
-
-));
+});
 
 return (
 
@@ -26,7 +18,7 @@ return (
 
 </div>
 
-);
+)
 
 }
 

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import CheckList from './CheckList';
+var marked = require('marked');
 
 class Card extends Component {
 	constructor() {
@@ -17,20 +18,33 @@ class Card extends Component {
 		if (this.state.showDetails) {
 			cardDetails = (
 				<div className="card__details">
-					{this.props.description}
-						<CheckList tasks={this.props.tasks} />
+				{marked(this.props.description)}
+				<CheckList tasks={this.props.tasks} />
 				</div>
 			);
-		}
+	}
 
-		return (
-			<div className="card">
-				<div className="card__title" onClick={this.toggleDetails.bind(this)}>
-					{this.props.title}
-				</div>
-				{cardDetails}
-			</div>
-		);
+	var sideColor = {
+		position: 'absolute',
+		zIndex: -1,
+		top: 0,
+		bottom: 0,
+		left: 0,
+		width: 7,
+		backgroundColor: this.props.color
+	};
+
+	return (
+		<div className="card">
+		<div style={sideColor}/>
+		<div className={
+		this.state.showDetails? "card__title card__title--is-open" : "card__title"
+		} onClick={this.toggleDetails.bind(this)}>
+		{this.props.title}
+		</div>
+		{cardDetails}
+		</div>
+	);
 	}
 }
 
