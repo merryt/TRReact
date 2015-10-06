@@ -1,27 +1,29 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 
-class CheckList extends React.Component {
+class CheckList extends Component {
 
-render(){
+	render(){
+		var tasks = this.props.tasks.map((task) => {
+		 return (
+			<li className="checklist__task" key={task.id}>
+				<input type="checkbox" defaultChecked={task.done} />
+				{task.name}
+				<a href="#" className="checklist__task--remove" />
+			</li>
+			)
+		});
 
-var tasks = this.props.tasks.map((task) => {
-
-//return <Task key={task.id} name={task.name} done={task.done} />
-
-});
-
-return (
-
-<div className="checklist">
-
-<ul>{tasks}</ul>
-
-</div>
-
-)
-
+		return (
+			<div className="checklist">
+				<ul>{tasks}</ul>
+			</div>
+		)
+	}
 }
 
-}
+CheckList.propTypes = {
+  cardId: PropTypes.number,
+  tasks: PropTypes.arrayOf(React.PropTypes.object)
+};
 
 export default CheckList;
