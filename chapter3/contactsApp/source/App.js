@@ -1,6 +1,34 @@
 import React, { Component, PropTypes } from 'react';
+require('whatwg-fetch');
 
-// Main (stateful) component. 
+class ContactsAppContainer extends Component {
+  constructor(){
+    super();
+    this.state={
+      contacts: []
+    };
+  }
+
+  componentDidMount(){
+    fetch('./contacts.json')
+    .then((response) => response.json())
+    .then((responseData) => {
+      this.setState({contacts: responseData});
+    })
+    .catch((error) => {
+      console.log('Error fetching and parsing data', error);
+    });
+  }
+
+  render(){
+    return (
+      <ContactsApp contacts={this.state.contacts} />
+    );
+  }
+}
+
+
+// Main (stateful) component.
 // Renders a SearchBar and a ContactList
 // Passes down filterText state and handleUserInput callback as props
 class ContactsApp extends Component {
@@ -86,15 +114,6 @@ ContactItem.propTypes = {
   email: PropTypes.string.isRequired
 }
 
-var contacts = [
-  { name: "Cassio Zen", email: "cassiozen@gmail.com" },
-  { name: "Dan Abramov", email: "gaearon@somewhere.com" },
-  { name: "Pete Hunt", email: "floydophone@somewhere.com" },
-  { name: "Paul O’Shannessy", email: "zpao@somewhere.com" },
-  { name: "Ryan Florence", email: "rpflorence@somewhere.com" },
-  { name: "Sebastian Markbage", email: "sebmarkbage@here.com" },
-]
-
 React.render(
-   <ContactsApp contacts={contacts} />, document.getElementById('app')
+   <ContactsAppContainer />, document.getElementById('app')
 );

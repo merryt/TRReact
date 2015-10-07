@@ -67,12 +67,49 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	// Main (stateful) component.
-	// Renders a SearchBar and a ContactList
-	// Passes down filterText state and handleUserInput callback as props
+	__webpack_require__(158);
 
-	var ContactsApp = (function (_Component) {
-	  _inherits(ContactsApp, _Component);
+	var ContactsAppContainer = (function (_Component) {
+	  _inherits(ContactsAppContainer, _Component);
+
+	  function ContactsAppContainer() {
+	    _classCallCheck(this, ContactsAppContainer);
+
+	    _get(Object.getPrototypeOf(ContactsAppContainer.prototype), 'constructor', this).call(this);
+	    this.state = {
+	      contacts: []
+	    };
+	  }
+
+	  // Main (stateful) component.
+	  // Renders a SearchBar and a ContactList
+	  // Passes down filterText state and handleUserInput callback as props
+
+	  _createClass(ContactsAppContainer, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      var _this = this;
+
+	      fetch('./contacts.json').then(function (response) {
+	        return response.json();
+	      }).then(function (responseData) {
+	        _this.setState({ contacts: responseData });
+	      })['catch'](function (error) {
+	        console.log('Error fetching and parsing data', error);
+	      });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react2['default'].createElement(ContactsApp, { contacts: this.state.contacts });
+	    }
+	  }]);
+
+	  return ContactsAppContainer;
+	})(_react.Component);
+
+	var ContactsApp = (function (_Component2) {
+	  _inherits(ContactsApp, _Component2);
 
 	  function ContactsApp() {
 	    _classCallCheck(this, ContactsApp);
@@ -112,8 +149,8 @@
 	// Pure component that receives 2 props from the parent
 	// filterText (string) and onUserInput (callback function)
 
-	var SearchBar = (function (_Component2) {
-	  _inherits(SearchBar, _Component2);
+	var SearchBar = (function (_Component3) {
+	  _inherits(SearchBar, _Component3);
 
 	  function SearchBar() {
 	    _classCallCheck(this, SearchBar);
@@ -150,8 +187,8 @@
 	// It's considered a pure component because given the same
 	// contacts and filterText props the output will always be the same.
 
-	var ContactList = (function (_Component3) {
-	  _inherits(ContactList, _Component3);
+	var ContactList = (function (_Component4) {
+	  _inherits(ContactList, _Component4);
 
 	  function ContactList() {
 	    _classCallCheck(this, ContactList);
@@ -162,10 +199,10 @@
 	  _createClass(ContactList, [{
 	    key: 'render',
 	    value: function render() {
-	      var _this = this;
+	      var _this2 = this;
 
 	      var filteredContacts = this.props.contacts.filter(function (contact) {
-	        return contact.name.indexOf(_this.props.filterText) !== -1;
+	        return contact.name.indexOf(_this2.props.filterText) !== -1;
 	      });
 	      return _react2['default'].createElement(
 	        'ul',
@@ -187,8 +224,8 @@
 	  filterText: _react.PropTypes.string.isRequired
 	};
 
-	var ContactItem = (function (_Component4) {
-	  _inherits(ContactItem, _Component4);
+	var ContactItem = (function (_Component5) {
+	  _inherits(ContactItem, _Component5);
 
 	  function ContactItem() {
 	    _classCallCheck(this, ContactItem);
@@ -217,9 +254,7 @@
 	  email: _react.PropTypes.string.isRequired
 	};
 
-	var contacts = [{ name: "Cassio Zen", email: "cassiozen@gmail.com" }, { name: "Dan Abramov", email: "gaearon@somewhere.com" }, { name: "Pete Hunt", email: "floydophone@somewhere.com" }, { name: "Paul O’Shannessy", email: "zpao@somewhere.com" }, { name: "Ryan Florence", email: "rpflorence@somewhere.com" }, { name: "Sebastian Markbage", email: "sebmarkbage@here.com" }];
-
-	_react2['default'].render(_react2['default'].createElement(ContactsApp, { contacts: contacts }), document.getElementById('app'));
+	_react2['default'].render(_react2['default'].createElement(ContactsAppContainer, null), document.getElementById('app'));
 
 /***/ },
 /* 2 */
@@ -18359,6 +18394,341 @@
 
 	module.exports = onlyChild;
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
+
+/***/ },
+/* 158 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	(function () {
+	  'use strict';
+
+	  if (self.fetch) {
+	    return;
+	  }
+
+	  function normalizeName(name) {
+	    if (typeof name !== 'string') {
+	      name = name.toString();
+	    }
+	    if (/[^a-z0-9\-#$%&'*+.\^_`|~]/i.test(name)) {
+	      throw new TypeError('Invalid character in header field name');
+	    }
+	    return name.toLowerCase();
+	  }
+
+	  function normalizeValue(value) {
+	    if (typeof value !== 'string') {
+	      value = value.toString();
+	    }
+	    return value;
+	  }
+
+	  function Headers(headers) {
+	    this.map = {};
+
+	    if (headers instanceof Headers) {
+	      headers.forEach(function (value, name) {
+	        this.append(name, value);
+	      }, this);
+	    } else if (headers) {
+	      Object.getOwnPropertyNames(headers).forEach(function (name) {
+	        this.append(name, headers[name]);
+	      }, this);
+	    }
+	  }
+
+	  Headers.prototype.append = function (name, value) {
+	    name = normalizeName(name);
+	    value = normalizeValue(value);
+	    var list = this.map[name];
+	    if (!list) {
+	      list = [];
+	      this.map[name] = list;
+	    }
+	    list.push(value);
+	  };
+
+	  Headers.prototype['delete'] = function (name) {
+	    delete this.map[normalizeName(name)];
+	  };
+
+	  Headers.prototype.get = function (name) {
+	    var values = this.map[normalizeName(name)];
+	    return values ? values[0] : null;
+	  };
+
+	  Headers.prototype.getAll = function (name) {
+	    return this.map[normalizeName(name)] || [];
+	  };
+
+	  Headers.prototype.has = function (name) {
+	    return this.map.hasOwnProperty(normalizeName(name));
+	  };
+
+	  Headers.prototype.set = function (name, value) {
+	    this.map[normalizeName(name)] = [normalizeValue(value)];
+	  };
+
+	  Headers.prototype.forEach = function (callback, thisArg) {
+	    Object.getOwnPropertyNames(this.map).forEach(function (name) {
+	      this.map[name].forEach(function (value) {
+	        callback.call(thisArg, value, name, this);
+	      }, this);
+	    }, this);
+	  };
+
+	  function consumed(body) {
+	    if (body.bodyUsed) {
+	      return Promise.reject(new TypeError('Already read'));
+	    }
+	    body.bodyUsed = true;
+	  }
+
+	  function fileReaderReady(reader) {
+	    return new Promise(function (resolve, reject) {
+	      reader.onload = function () {
+	        resolve(reader.result);
+	      };
+	      reader.onerror = function () {
+	        reject(reader.error);
+	      };
+	    });
+	  }
+
+	  function readBlobAsArrayBuffer(blob) {
+	    var reader = new FileReader();
+	    reader.readAsArrayBuffer(blob);
+	    return fileReaderReady(reader);
+	  }
+
+	  function readBlobAsText(blob) {
+	    var reader = new FileReader();
+	    reader.readAsText(blob);
+	    return fileReaderReady(reader);
+	  }
+
+	  var support = {
+	    blob: 'FileReader' in self && 'Blob' in self && (function () {
+	      try {
+	        new Blob();
+	        return true;
+	      } catch (e) {
+	        return false;
+	      }
+	    })(),
+	    formData: 'FormData' in self
+	  };
+
+	  function Body() {
+	    this.bodyUsed = false;
+
+	    this._initBody = function (body) {
+	      this._bodyInit = body;
+	      if (typeof body === 'string') {
+	        this._bodyText = body;
+	      } else if (support.blob && Blob.prototype.isPrototypeOf(body)) {
+	        this._bodyBlob = body;
+	      } else if (support.formData && FormData.prototype.isPrototypeOf(body)) {
+	        this._bodyFormData = body;
+	      } else if (!body) {
+	        this._bodyText = '';
+	      } else {
+	        throw new Error('unsupported BodyInit type');
+	      }
+	    };
+
+	    if (support.blob) {
+	      this.blob = function () {
+	        var rejected = consumed(this);
+	        if (rejected) {
+	          return rejected;
+	        }
+
+	        if (this._bodyBlob) {
+	          return Promise.resolve(this._bodyBlob);
+	        } else if (this._bodyFormData) {
+	          throw new Error('could not read FormData body as blob');
+	        } else {
+	          return Promise.resolve(new Blob([this._bodyText]));
+	        }
+	      };
+
+	      this.arrayBuffer = function () {
+	        return this.blob().then(readBlobAsArrayBuffer);
+	      };
+
+	      this.text = function () {
+	        var rejected = consumed(this);
+	        if (rejected) {
+	          return rejected;
+	        }
+
+	        if (this._bodyBlob) {
+	          return readBlobAsText(this._bodyBlob);
+	        } else if (this._bodyFormData) {
+	          throw new Error('could not read FormData body as text');
+	        } else {
+	          return Promise.resolve(this._bodyText);
+	        }
+	      };
+	    } else {
+	      this.text = function () {
+	        var rejected = consumed(this);
+	        return rejected ? rejected : Promise.resolve(this._bodyText);
+	      };
+	    }
+
+	    if (support.formData) {
+	      this.formData = function () {
+	        return this.text().then(decode);
+	      };
+	    }
+
+	    this.json = function () {
+	      return this.text().then(JSON.parse);
+	    };
+
+	    return this;
+	  }
+
+	  // HTTP methods whose capitalization should be normalized
+	  var methods = ['DELETE', 'GET', 'HEAD', 'OPTIONS', 'POST', 'PUT'];
+
+	  function normalizeMethod(method) {
+	    var upcased = method.toUpperCase();
+	    return methods.indexOf(upcased) > -1 ? upcased : method;
+	  }
+
+	  function Request(url, options) {
+	    options = options || {};
+	    this.url = url;
+
+	    this.credentials = options.credentials || 'omit';
+	    this.headers = new Headers(options.headers);
+	    this.method = normalizeMethod(options.method || 'GET');
+	    this.mode = options.mode || null;
+	    this.referrer = null;
+
+	    if ((this.method === 'GET' || this.method === 'HEAD') && options.body) {
+	      throw new TypeError('Body not allowed for GET or HEAD requests');
+	    }
+	    this._initBody(options.body);
+	  }
+
+	  function decode(body) {
+	    var form = new FormData();
+	    body.trim().split('&').forEach(function (bytes) {
+	      if (bytes) {
+	        var split = bytes.split('=');
+	        var name = split.shift().replace(/\+/g, ' ');
+	        var value = split.join('=').replace(/\+/g, ' ');
+	        form.append(decodeURIComponent(name), decodeURIComponent(value));
+	      }
+	    });
+	    return form;
+	  }
+
+	  function headers(xhr) {
+	    var head = new Headers();
+	    var pairs = xhr.getAllResponseHeaders().trim().split('\n');
+	    pairs.forEach(function (header) {
+	      var split = header.trim().split(':');
+	      var key = split.shift().trim();
+	      var value = split.join(':').trim();
+	      head.append(key, value);
+	    });
+	    return head;
+	  }
+
+	  Body.call(Request.prototype);
+
+	  function Response(bodyInit, options) {
+	    if (!options) {
+	      options = {};
+	    }
+
+	    this._initBody(bodyInit);
+	    this.type = 'default';
+	    this.url = null;
+	    this.status = options.status;
+	    this.ok = this.status >= 200 && this.status < 300;
+	    this.statusText = options.statusText;
+	    this.headers = options.headers instanceof Headers ? options.headers : new Headers(options.headers);
+	    this.url = options.url || '';
+	  }
+
+	  Body.call(Response.prototype);
+
+	  self.Headers = Headers;
+	  self.Request = Request;
+	  self.Response = Response;
+
+	  self.fetch = function (input, init) {
+	    // TODO: Request constructor should accept input, init
+	    var request;
+	    if (Request.prototype.isPrototypeOf(input) && !init) {
+	      request = input;
+	    } else {
+	      request = new Request(input, init);
+	    }
+
+	    return new Promise(function (resolve, reject) {
+	      var xhr = new XMLHttpRequest();
+
+	      function responseURL() {
+	        if ('responseURL' in xhr) {
+	          return xhr.responseURL;
+	        }
+
+	        // Avoid security warnings on getResponseHeader when not allowed by CORS
+	        if (/^X-Request-URL:/m.test(xhr.getAllResponseHeaders())) {
+	          return xhr.getResponseHeader('X-Request-URL');
+	        }
+
+	        return;
+	      }
+
+	      xhr.onload = function () {
+	        var status = xhr.status === 1223 ? 204 : xhr.status;
+	        if (status < 100 || status > 599) {
+	          reject(new TypeError('Network request failed'));
+	          return;
+	        }
+	        var options = {
+	          status: status,
+	          statusText: xhr.statusText,
+	          headers: headers(xhr),
+	          url: responseURL()
+	        };
+	        var body = 'response' in xhr ? xhr.response : xhr.responseText;
+	        resolve(new Response(body, options));
+	      };
+
+	      xhr.onerror = function () {
+	        reject(new TypeError('Network request failed'));
+	      };
+
+	      xhr.open(request.method, request.url, true);
+
+	      if (request.credentials === 'include') {
+	        xhr.withCredentials = true;
+	      }
+
+	      if ('responseType' in xhr && support.blob) {
+	        xhr.responseType = 'blob';
+	      }
+
+	      request.headers.forEach(function (value, name) {
+	        xhr.setRequestHeader(name, value);
+	      });
+
+	      xhr.send(typeof request._bodyInit === 'undefined' ? null : request._bodyInit);
+	    });
+	  };
+	  self.fetch.polyfill = true;
+	})();
 
 /***/ }
 /******/ ]);
