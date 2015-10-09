@@ -59,9 +59,9 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _KanbanBoard = __webpack_require__(158);
+	var _KanbanBoardContainer = __webpack_require__(158);
 
-	var _KanbanBoard2 = _interopRequireDefault(_KanbanBoard);
+	var _KanbanBoardContainer2 = _interopRequireDefault(_KanbanBoardContainer);
 
 	var cardsList = [{
 		id: 1,
@@ -86,7 +86,7 @@
 		tasks: [{ id: 1, name: "ContactList Example", done: false }, { id: 2, name: "Kanban Example", done: true }, { id: 3, name: "My own experiments", done: false }]
 	}];
 
-	_react2['default'].render(_react2['default'].createElement(_KanbanBoard2['default'], { cards: cardsList }), document.getElementById('root'));
+	_react2['default'].render(_react2['default'].createElement(_KanbanBoardContainer2['default'], null), document.getElementById('root'));
 
 /***/ },
 /* 2 */
@@ -18251,7 +18251,96 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _List = __webpack_require__(159);
+	var _KanbanBoard = __webpack_require__(159);
+
+	var _KanbanBoard2 = _interopRequireDefault(_KanbanBoard);
+
+	__webpack_require__(164);
+
+	// If you're running the server locally, the URL will be, by default, localhost:3000
+	// Also, the local server doesn't need an authorization header.
+	var API_URL = 'http://kanbanapi.pro-react.com';
+	var API_HEADERS = {
+	  'Content-Type': 'application/json',
+	  Authorization: 'any-string-you-like' // The Authorization is not needed for local server
+	};
+
+	var KanbanBoardContainer = (function (_Component) {
+	  _inherits(KanbanBoardContainer, _Component);
+
+	  function KanbanBoardContainer() {
+	    _classCallCheck(this, KanbanBoardContainer);
+
+	    _get(Object.getPrototypeOf(KanbanBoardContainer.prototype), 'constructor', this).apply(this, arguments);
+	    this.state = {
+	      cards: []
+	    };
+	  }
+
+	  _createClass(KanbanBoardContainer, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      var _this = this;
+
+	      fetch(API_URL + '/cards', { headers: API_HEADERS }).then(function (response) {
+	        return response.json();
+	      }).then(function (responseData) {
+	        _this.setState({ cards: responseData });
+	      })['catch'](function (error) {
+	        console.log('Error fetching and parsing data', error);
+	      });
+	    }
+	  }, {
+	    key: 'addTask',
+	    value: function addTask(cardId, taskName) {}
+	  }, {
+	    key: 'deleteTask',
+	    value: function deleteTask(cardId, taskId, taskIndex) {}
+	  }, {
+	    key: 'toggleTask',
+	    value: function toggleTask(cardId, taskId, taskIndex) {}
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react2['default'].createElement(_KanbanBoard2['default'], { cards: this.state.cards,
+	        taskCallbacks: {
+	          toggle: this.toggleTask.bind(this),
+	          'delete': this.deleteTask.bind(this),
+	          add: this.addTask.bind(this) } });
+	    }
+	  }]);
+
+	  return KanbanBoardContainer;
+	})(_react.Component);
+
+	exports['default'] = KanbanBoardContainer;
+	module.exports = exports['default'];
+
+/***/ },
+/* 159 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _List = __webpack_require__(160);
 
 	var _List2 = _interopRequireDefault(_List);
 
@@ -18270,14 +18359,14 @@
 	      return _react2['default'].createElement(
 	        'div',
 	        { className: 'app' },
-	        _react2['default'].createElement(_List2['default'], { id: 'todo', title: 'To Do', cards: this.props.cards.filter(function (card) {
+	        _react2['default'].createElement(_List2['default'], { title: 'To Do', taskCallbacks: this.props.taskCallbacks, cards: this.props.cards.filter(function (card) {
 	            return card.status === "todo";
 	          }) }),
-	        _react2['default'].createElement(_List2['default'], { id: 'in-progress', title: 'In Progress', cards: this.props.cards.filter(function (card) {
-	            return card.status === "in-progress";
+	        _react2['default'].createElement(_List2['default'], { title: 'In Progress', taskCallbacks: this.props.taskCallbacks, cards: this.props.cards.filter(function (card) {
+	            return card.status == "in-progress";
 	          }) }),
-	        _react2['default'].createElement(_List2['default'], { id: 'done', title: 'Done', cards: this.props.cards.filter(function (card) {
-	            return card.status === "done";
+	        _react2['default'].createElement(_List2['default'], { title: 'Done', taskCallbacks: this.props.taskCallbacks, cards: this.props.cards.filter(function (card) {
+	            return card.status == "done";
 	          }) })
 	      );
 	    }
@@ -18287,6 +18376,11 @@
 	})(_react.Component);
 
 	KanbanBoard.propTypes = {
+	  cards: _react.PropTypes.arrayOf(_react.PropTypes.object),
+	  taskCallbacks: _react.PropTypes.object
+	};
+
+	KanbanBoard.propTypes = {
 	  cards: _react.PropTypes.arrayOf(_react2['default'].PropTypes.object)
 	};
 
@@ -18294,7 +18388,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 159 */
+/* 160 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -18302,6 +18396,8 @@
 	Object.defineProperty(exports, '__esModule', {
 		value: true
 	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -18317,7 +18413,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _Card = __webpack_require__(160);
+	var _Card = __webpack_require__(161);
 
 	var _Card2 = _interopRequireDefault(_Card);
 
@@ -18333,14 +18429,19 @@
 		_createClass(List, [{
 			key: 'render',
 			value: function render() {
+				var _this = this;
 
 				var cards = this.props.cards.map(function (card) {
-					return _react2['default'].createElement(_Card2['default'], { key: card.id,
-						title: card.title,
-						description: card.description,
-						color: card.color,
-						tasks: card.tasks });
+					return _react2['default'].createElement(_Card2['default'], _extends({ key: card.id, taskCallbacks: _this.props.taskCallbacks }, card));
 				});
+
+				// var cards = this.props.cards.map((card) => {
+				// 	return <Card key={card.id}
+				// 		title={card.title}
+				// 		description={card.description}
+				// 		color={card.color}
+				// 		tasks={card.tasks} />
+				// 	});
 
 				return _react2['default'].createElement(
 					'div',
@@ -18360,20 +18461,21 @@
 
 	List.propTypes = {
 		title: _react.PropTypes.string.isRequired,
-		cards: _react.PropTypes.arrayOf(_react2['default'].PropTypes.object)
+		cards: _react.PropTypes.arrayOf(_react2['default'].PropTypes.object),
+		taskCallbacks: _react.PropTypes.object
 	};
 
 	exports['default'] = List;
 	module.exports = exports['default'];
 
 /***/ },
-/* 160 */
+/* 161 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	Object.defineProperty(exports, '__esModule', {
-		value: true
+			value: true
 	});
 
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -18390,93 +18492,97 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _marked = __webpack_require__(161);
+	var _marked = __webpack_require__(162);
 
 	var _marked2 = _interopRequireDefault(_marked);
 
-	var _CheckList = __webpack_require__(162);
+	var _CheckList = __webpack_require__(163);
 
 	var _CheckList2 = _interopRequireDefault(_CheckList);
 
 	var titlePropType = function titlePropType(props, propName, componentName) {
-		if (props[propName]) {
-			var value = props[propName];
-			if (typeof value !== 'string' || value.length > 80) {
-				return new Error(propName + ' in ' + componentName + '  is longer than 80 characters');
+			if (props[propName]) {
+					var value = props[propName];
+					if (typeof value !== 'string' || value.length > 80) {
+							return new Error(propName + ' in ' + componentName + '  is longer than 80 characters');
+					}
 			}
-		}
 	};
 
 	var Card = (function (_Component) {
-		_inherits(Card, _Component);
+			_inherits(Card, _Component);
 
-		function Card() {
-			_classCallCheck(this, Card);
+			function Card() {
+					_classCallCheck(this, Card);
 
-			_get(Object.getPrototypeOf(Card.prototype), 'constructor', this).apply(this, arguments);
-			this.state = {
-				showDetails: false
-			};
-		}
-
-		_createClass(Card, [{
-			key: 'toggleDetails',
-			value: function toggleDetails() {
-				this.setState({ showDetails: !this.state.showDetails });
+					_get(Object.getPrototypeOf(Card.prototype), 'constructor', this).apply(this, arguments);
+					this.state = {
+							showDetails: false
+					};
 			}
-		}, {
-			key: 'render',
-			value: function render() {
-				var cardDetails;
-				if (this.state.showDetails) {
-					cardDetails = _react2['default'].createElement(
-						'div',
-						{ className: 'card__details' },
-						(0, _marked2['default'])(this.props.description),
-						_react2['default'].createElement(_CheckList2['default'], { tasks: this.props.tasks })
-					);
-				}
 
-				var sideColor = {
-					position: 'absolute',
-					zIndex: -1,
-					top: 0,
-					bottom: 0,
-					left: 0,
-					width: 7,
-					backgroundColor: this.props.color
-				};
+			_createClass(Card, [{
+					key: 'toggleDetails',
+					value: function toggleDetails() {
+							this.setState({ showDetails: !this.state.showDetails });
+					}
+			}, {
+					key: 'render',
+					value: function render() {
+							var cardDetails;
 
-				return _react2['default'].createElement(
-					'div',
-					{ className: 'card' },
-					_react2['default'].createElement('div', { style: sideColor }),
-					_react2['default'].createElement(
-						'div',
-						{ className: this.state.showDetails ? "card__title card__title--is-open" : "card__title", onClick: this.toggleDetails.bind(this) },
-						this.props.title
-					),
-					cardDetails
-				);
-			}
-		}]);
+							if (this.state.showDetails) {
+									cardDetails = _react2['default'].createElement(
+											'div',
+											{ className: 'card__details' },
+											_react2['default'].createElement('span', { dangerouslySetInnerHTML: { __html: (0, _marked2['default'])(this.props.description) } }),
+											_react2['default'].createElement(_CheckList2['default'], { cardId: this.props.id,
+													tasks: this.props.tasks,
+													taskCallbacks: this.props.taskCallbacks })
+									);
+							}
 
-		return Card;
+							var sideColor = {
+									position: 'absolute',
+									zIndex: -1,
+									top: 0,
+									bottom: 0,
+									left: 0,
+									width: 7,
+									backgroundColor: this.props.color
+							};
+
+							return _react2['default'].createElement(
+									'div',
+									{ className: 'card' },
+									_react2['default'].createElement('div', { style: sideColor }),
+									_react2['default'].createElement(
+											'div',
+											{ className: this.state.showDetails ? "card__title card__title--is-open" : "card__title", onClick: this.toggleDetails.bind(this) },
+											this.props.title
+									),
+									cardDetails
+							);
+					}
+			}]);
+
+			return Card;
 	})(_react.Component);
 
 	Card.propTypes = {
-		id: _react.PropTypes.number,
-		title: titlePropType,
-		description: _react2['default'].PropTypes.string,
-		color: _react2['default'].PropTypes.string,
-		tasks: _react2['default'].PropTypes.arrayOf(_react2['default'].PropTypes.object)
+			id: _react.PropTypes.number,
+			title: titlePropType,
+			description: _react.PropTypes.string,
+			color: _react.PropTypes.string,
+			tasks: _react.PropTypes.array,
+			taskCallbacks: _react.PropTypes.object
 	};
 
 	exports['default'] = Card;
 	module.exports = exports['default'];
 
 /***/ },
-/* 161 */
+/* 162 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/**
@@ -19663,73 +19769,424 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 162 */
+/* 163 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
-	Object.defineProperty(exports, "__esModule", {
-		value: true
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
 	});
 
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var _react = __webpack_require__(2);
 
 	var _react2 = _interopRequireDefault(_react);
 
 	var CheckList = (function (_Component) {
-		_inherits(CheckList, _Component);
+	  _inherits(CheckList, _Component);
 
-		function CheckList() {
-			_classCallCheck(this, CheckList);
+	  function CheckList() {
+	    _classCallCheck(this, CheckList);
 
-			_get(Object.getPrototypeOf(CheckList.prototype), "constructor", this).apply(this, arguments);
-		}
+	    _get(Object.getPrototypeOf(CheckList.prototype), 'constructor', this).apply(this, arguments);
+	  }
 
-		_createClass(CheckList, [{
-			key: "render",
-			value: function render() {
-				var tasks = this.props.tasks.map(function (task) {
-					return _react2["default"].createElement(
-						"li",
-						{ className: "checklist__task", key: task.id },
-						_react2["default"].createElement("input", { type: "checkbox", defaultChecked: task.done }),
-						task.name,
-						_react2["default"].createElement("a", { href: "#", className: "checklist__task--remove" })
-					);
-				});
+	  _createClass(CheckList, [{
+	    key: 'checkInputKeyPress',
+	    value: function checkInputKeyPress(evt) {
+	      if (evt.key === 'Enter') {
+	        this.props.taskCallbacks.add(this.props.cardId, evt.target.value);
+	        evt.target.value = '';
+	      }
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this = this;
 
-				return _react2["default"].createElement(
-					"div",
-					{ className: "checklist" },
-					_react2["default"].createElement(
-						"ul",
-						null,
-						tasks
-					)
-				);
-			}
-		}]);
+	      var tasks = this.props.tasks.map(function (task, taskIndex) {
+	        return _react2['default'].createElement(
+	          'li',
+	          { key: task.id, className: 'checklist__task' },
+	          _react2['default'].createElement('input', { type: 'checkbox', checked: task.done, onChange: _this.props.taskCallbacks.toggle.bind(null, _this.props.cardId, task.id, taskIndex) }),
+	          task.name,
+	          ' ',
+	          _react2['default'].createElement('a', { href: '#', className: 'checklist__task--remove', onClick: _this.props.taskCallbacks['delete'].bind(null, _this.props.cardId, task.id, taskIndex) })
+	        );
+	      });
 
-		return CheckList;
+	      return _react2['default'].createElement(
+	        'div',
+	        { className: 'checklist' },
+	        _react2['default'].createElement(
+	          'ul',
+	          null,
+	          tasks
+	        ),
+	        _react2['default'].createElement('input', { type: 'text',
+	          className: 'checklist--add-task',
+	          placeholder: 'Type then hit Enter to add a task',
+	          onKeyPress: this.checkInputKeyPress.bind(this) })
+	      );
+	    }
+	  }]);
+
+	  return CheckList;
 	})(_react.Component);
 
 	CheckList.propTypes = {
-		cardId: _react.PropTypes.number,
-		tasks: _react.PropTypes.arrayOf(_react2["default"].PropTypes.object)
+	  cardId: _react.PropTypes.number,
+	  taskCallbacks: _react.PropTypes.object,
+	  tasks: _react.PropTypes.array
 	};
 
-	exports["default"] = CheckList;
-	module.exports = exports["default"];
+	exports['default'] = CheckList;
+	module.exports = exports['default'];
+
+/***/ },
+/* 164 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	(function () {
+	  'use strict';
+
+	  if (self.fetch) {
+	    return;
+	  }
+
+	  function normalizeName(name) {
+	    if (typeof name !== 'string') {
+	      name = name.toString();
+	    }
+	    if (/[^a-z0-9\-#$%&'*+.\^_`|~]/i.test(name)) {
+	      throw new TypeError('Invalid character in header field name');
+	    }
+	    return name.toLowerCase();
+	  }
+
+	  function normalizeValue(value) {
+	    if (typeof value !== 'string') {
+	      value = value.toString();
+	    }
+	    return value;
+	  }
+
+	  function Headers(headers) {
+	    this.map = {};
+
+	    if (headers instanceof Headers) {
+	      headers.forEach(function (value, name) {
+	        this.append(name, value);
+	      }, this);
+	    } else if (headers) {
+	      Object.getOwnPropertyNames(headers).forEach(function (name) {
+	        this.append(name, headers[name]);
+	      }, this);
+	    }
+	  }
+
+	  Headers.prototype.append = function (name, value) {
+	    name = normalizeName(name);
+	    value = normalizeValue(value);
+	    var list = this.map[name];
+	    if (!list) {
+	      list = [];
+	      this.map[name] = list;
+	    }
+	    list.push(value);
+	  };
+
+	  Headers.prototype['delete'] = function (name) {
+	    delete this.map[normalizeName(name)];
+	  };
+
+	  Headers.prototype.get = function (name) {
+	    var values = this.map[normalizeName(name)];
+	    return values ? values[0] : null;
+	  };
+
+	  Headers.prototype.getAll = function (name) {
+	    return this.map[normalizeName(name)] || [];
+	  };
+
+	  Headers.prototype.has = function (name) {
+	    return this.map.hasOwnProperty(normalizeName(name));
+	  };
+
+	  Headers.prototype.set = function (name, value) {
+	    this.map[normalizeName(name)] = [normalizeValue(value)];
+	  };
+
+	  Headers.prototype.forEach = function (callback, thisArg) {
+	    Object.getOwnPropertyNames(this.map).forEach(function (name) {
+	      this.map[name].forEach(function (value) {
+	        callback.call(thisArg, value, name, this);
+	      }, this);
+	    }, this);
+	  };
+
+	  function consumed(body) {
+	    if (body.bodyUsed) {
+	      return Promise.reject(new TypeError('Already read'));
+	    }
+	    body.bodyUsed = true;
+	  }
+
+	  function fileReaderReady(reader) {
+	    return new Promise(function (resolve, reject) {
+	      reader.onload = function () {
+	        resolve(reader.result);
+	      };
+	      reader.onerror = function () {
+	        reject(reader.error);
+	      };
+	    });
+	  }
+
+	  function readBlobAsArrayBuffer(blob) {
+	    var reader = new FileReader();
+	    reader.readAsArrayBuffer(blob);
+	    return fileReaderReady(reader);
+	  }
+
+	  function readBlobAsText(blob) {
+	    var reader = new FileReader();
+	    reader.readAsText(blob);
+	    return fileReaderReady(reader);
+	  }
+
+	  var support = {
+	    blob: 'FileReader' in self && 'Blob' in self && (function () {
+	      try {
+	        new Blob();
+	        return true;
+	      } catch (e) {
+	        return false;
+	      }
+	    })(),
+	    formData: 'FormData' in self
+	  };
+
+	  function Body() {
+	    this.bodyUsed = false;
+
+	    this._initBody = function (body) {
+	      this._bodyInit = body;
+	      if (typeof body === 'string') {
+	        this._bodyText = body;
+	      } else if (support.blob && Blob.prototype.isPrototypeOf(body)) {
+	        this._bodyBlob = body;
+	      } else if (support.formData && FormData.prototype.isPrototypeOf(body)) {
+	        this._bodyFormData = body;
+	      } else if (!body) {
+	        this._bodyText = '';
+	      } else {
+	        throw new Error('unsupported BodyInit type');
+	      }
+	    };
+
+	    if (support.blob) {
+	      this.blob = function () {
+	        var rejected = consumed(this);
+	        if (rejected) {
+	          return rejected;
+	        }
+
+	        if (this._bodyBlob) {
+	          return Promise.resolve(this._bodyBlob);
+	        } else if (this._bodyFormData) {
+	          throw new Error('could not read FormData body as blob');
+	        } else {
+	          return Promise.resolve(new Blob([this._bodyText]));
+	        }
+	      };
+
+	      this.arrayBuffer = function () {
+	        return this.blob().then(readBlobAsArrayBuffer);
+	      };
+
+	      this.text = function () {
+	        var rejected = consumed(this);
+	        if (rejected) {
+	          return rejected;
+	        }
+
+	        if (this._bodyBlob) {
+	          return readBlobAsText(this._bodyBlob);
+	        } else if (this._bodyFormData) {
+	          throw new Error('could not read FormData body as text');
+	        } else {
+	          return Promise.resolve(this._bodyText);
+	        }
+	      };
+	    } else {
+	      this.text = function () {
+	        var rejected = consumed(this);
+	        return rejected ? rejected : Promise.resolve(this._bodyText);
+	      };
+	    }
+
+	    if (support.formData) {
+	      this.formData = function () {
+	        return this.text().then(decode);
+	      };
+	    }
+
+	    this.json = function () {
+	      return this.text().then(JSON.parse);
+	    };
+
+	    return this;
+	  }
+
+	  // HTTP methods whose capitalization should be normalized
+	  var methods = ['DELETE', 'GET', 'HEAD', 'OPTIONS', 'POST', 'PUT'];
+
+	  function normalizeMethod(method) {
+	    var upcased = method.toUpperCase();
+	    return methods.indexOf(upcased) > -1 ? upcased : method;
+	  }
+
+	  function Request(url, options) {
+	    options = options || {};
+	    this.url = url;
+
+	    this.credentials = options.credentials || 'omit';
+	    this.headers = new Headers(options.headers);
+	    this.method = normalizeMethod(options.method || 'GET');
+	    this.mode = options.mode || null;
+	    this.referrer = null;
+
+	    if ((this.method === 'GET' || this.method === 'HEAD') && options.body) {
+	      throw new TypeError('Body not allowed for GET or HEAD requests');
+	    }
+	    this._initBody(options.body);
+	  }
+
+	  function decode(body) {
+	    var form = new FormData();
+	    body.trim().split('&').forEach(function (bytes) {
+	      if (bytes) {
+	        var split = bytes.split('=');
+	        var name = split.shift().replace(/\+/g, ' ');
+	        var value = split.join('=').replace(/\+/g, ' ');
+	        form.append(decodeURIComponent(name), decodeURIComponent(value));
+	      }
+	    });
+	    return form;
+	  }
+
+	  function headers(xhr) {
+	    var head = new Headers();
+	    var pairs = xhr.getAllResponseHeaders().trim().split('\n');
+	    pairs.forEach(function (header) {
+	      var split = header.trim().split(':');
+	      var key = split.shift().trim();
+	      var value = split.join(':').trim();
+	      head.append(key, value);
+	    });
+	    return head;
+	  }
+
+	  Body.call(Request.prototype);
+
+	  function Response(bodyInit, options) {
+	    if (!options) {
+	      options = {};
+	    }
+
+	    this._initBody(bodyInit);
+	    this.type = 'default';
+	    this.url = null;
+	    this.status = options.status;
+	    this.ok = this.status >= 200 && this.status < 300;
+	    this.statusText = options.statusText;
+	    this.headers = options.headers instanceof Headers ? options.headers : new Headers(options.headers);
+	    this.url = options.url || '';
+	  }
+
+	  Body.call(Response.prototype);
+
+	  self.Headers = Headers;
+	  self.Request = Request;
+	  self.Response = Response;
+
+	  self.fetch = function (input, init) {
+	    // TODO: Request constructor should accept input, init
+	    var request;
+	    if (Request.prototype.isPrototypeOf(input) && !init) {
+	      request = input;
+	    } else {
+	      request = new Request(input, init);
+	    }
+
+	    return new Promise(function (resolve, reject) {
+	      var xhr = new XMLHttpRequest();
+
+	      function responseURL() {
+	        if ('responseURL' in xhr) {
+	          return xhr.responseURL;
+	        }
+
+	        // Avoid security warnings on getResponseHeader when not allowed by CORS
+	        if (/^X-Request-URL:/m.test(xhr.getAllResponseHeaders())) {
+	          return xhr.getResponseHeader('X-Request-URL');
+	        }
+
+	        return;
+	      }
+
+	      xhr.onload = function () {
+	        var status = xhr.status === 1223 ? 204 : xhr.status;
+	        if (status < 100 || status > 599) {
+	          reject(new TypeError('Network request failed'));
+	          return;
+	        }
+	        var options = {
+	          status: status,
+	          statusText: xhr.statusText,
+	          headers: headers(xhr),
+	          url: responseURL()
+	        };
+	        var body = 'response' in xhr ? xhr.response : xhr.responseText;
+	        resolve(new Response(body, options));
+	      };
+
+	      xhr.onerror = function () {
+	        reject(new TypeError('Network request failed'));
+	      };
+
+	      xhr.open(request.method, request.url, true);
+
+	      if (request.credentials === 'include') {
+	        xhr.withCredentials = true;
+	      }
+
+	      if ('responseType' in xhr && support.blob) {
+	        xhr.responseType = 'blob';
+	      }
+
+	      request.headers.forEach(function (value, name) {
+	        xhr.setRequestHeader(name, value);
+	      });
+
+	      xhr.send(typeof request._bodyInit === 'undefined' ? null : request._bodyInit);
+	    });
+	  };
+	  self.fetch.polyfill = true;
+	})();
 
 /***/ }
 /******/ ]);

@@ -27,16 +27,19 @@ class Card extends Component {
 
 	render() {
 		var cardDetails;
-		if (this.state.showDetails) {
-			cardDetails = (
-				<div className="card__details">
-					{marked(this.props.description)}
-				  <CheckList tasks={this.props.tasks} />
-				</div>
-			);
-		}
 
-		var sideColor = {
+    if (this.state.showDetails) {
+      cardDetails = (
+        <div className="card__details">
+          <span dangerouslySetInnerHTML={{__html:marked(this.props.description)}} />
+          <CheckList cardId={this.props.id}
+                     tasks={this.props.tasks}
+                     taskCallbacks={this.props.taskCallbacks} />
+        </div>
+      );
+    }
+
+		let sideColor = {
 			position: 'absolute',
 			zIndex: -1,
 			top: 0,
@@ -63,9 +66,11 @@ class Card extends Component {
 Card.propTypes = {
   id: PropTypes.number,
   title: titlePropType,
-  description: React.PropTypes.string,
-  color: React.PropTypes.string,
-  tasks: React.PropTypes.arrayOf(React.PropTypes.object)
+  description: PropTypes.string,
+  color: PropTypes.string,
+  tasks: PropTypes.array,
+  taskCallbacks: PropTypes.object,
 }
+
 
 export default Card;
