@@ -3,11 +3,11 @@ import KanbanBoard from './KanbanBoard';
 // Polyfills
 import 'babel-core/polyfill'
 
-const API_URL='http://localhost:3000'
+const API_URL = 'http://kanbanapi.pro-react.com';
 const API_HEADERS = {
   'Content-Type': 'application/json',
-  Authorization: 'your-auth-id'
-}
+  Authorization: 'any-string-you-like'// The Authorization is not needed for local server
+};
 
 class KanbanBoardContainer extends Component {
   constructor(){
