@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Hacked together sidebar Transition</title>
+    <style media="screen">
+    /* the sidebar will have a list of contents. Let's style them too */
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li{
+      padding: 15px;
+      border-bottom: solid 1px #eee;
+      background-color: #ddd;
+    }
+    .sidebar{
+      background-color:#eee;
+      box-shadow: 1px 0 3px #888888;
+      position:absolute;
+      width: 15rem;
+      height: 100%;
+    }
+    .sidebar-transition{
+      opacity: 0;
+      left: -15rem;
+    }
+    .sidebar-transition-active{
+      opacity: 1;
+      left: 0;
+      transition: 0.5s;
+    }
+    </style>
+  </head>
+  <body>
+      <header>
+        <button onclick="
+            document.querySelector('.sidebar').classList.add('sidebar-transition-active');
+        "> ☰ </button>
+      </header>
+      <div class='sidebar sidebar-transition'>
+        <ul>
+          ...
+        </ul>
+      </div>
+  </body>
+</html>
