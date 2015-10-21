@@ -1,7 +1,7 @@
 import React, { Component } from 'react/addons';
 import KanbanBoard from './KanbanBoard';
 // Polyfills
-import 'babel-core/polyfill'
+import 'babel-core/polyfill';
 
 const API_URL = 'http://kanbanapi.pro-react.com';
 const API_HEADERS = {
@@ -12,11 +12,12 @@ const API_HEADERS = {
 class KanbanBoardContainer extends Component {
   constructor(){
     super(...arguments);
-    window.update = React.addons.update
     this.state = {
       cards:[],
     };
+    this.movingCard = {};
   }
+
 
   componentDidMount(){
     fetch(`${API_URL}/cards`, {headers:API_HEADERS})
@@ -164,12 +165,99 @@ class KanbanBoardContainer extends Component {
     });
   }
 
+    updateCardStatus(cardId, listId){
+    // Find the index of the card
+    let cardIndex = this.state.cards.findIndex((card)=>card.id == cardId);
+    // Get the current card
+    let card = this.state.cards[cardIndex]
+    // Only proceed if hovering over a different list
+    if(card.status !== listId){
+      // set the component state to the mutated object
+      this.setState(update(this.state, {
+          cards: {
+            [cardIndex]: {
+              status: { $set: listId }
+            }
+          }
+      }));
+    }
+  }
+
+  updateCardPosition (cardId , afterId) {
+    // Only proceed if hovering over a different card
+    if(cardId !== afterId) {
+      // Find the index of the card
+      let cardIndex = this.state.cards.findIndex((card)=>card.id == cardId);
+      // Get the current card
+      let card = this.state.cards[cardIndex]
+      // Find the index of the card the user is hovering over
+      let afterIndex = this.state.cards.findIndex((card)=>card.id == afterId);
+      // Use splice to remove the card and reinsert it a the new index
+      this.setState(update(this.state, {
+        cards: {
+          $splice: [
+            [cardIndex, 1],
+            [afterIndex, 0, card]
+          ]
+        }
+      }));
+    }
+  }
+
+  persistCardMove(cardId){
+    // Find the index of the card
+    let cardIndex = this.state.cards.findIndex((card)=>card.id == cardId);
+    // Get the current card
+    let card = this.state.cards[cardIndex]
+
+    if(card.status !== this.movingCard.card.status || cardIndex !== this.movingCard.index){
+      // Call the API to change the card Id on the server
+      fetch(`${API_URL}/cards/${cardId}`, {
+        method: 'put',
+        headers: API_HEADERS,
+        body: JSON.stringify({status:card.status, position: cardIndex+1}) // Differently from
+                                                                          // the array, the
+                                                                          // position starts at
+                                                                          // ‘1’ on the server
+
+      })
+      .then((response) => {
+        if(!response.ok){
+          // Throw an error if server response wasn't 'ok'
+          // so we can revert back the optimistic changes
+          // made to the UI.
+          throw new Error("Server response wasn't OK")
+        }
+      })
+      .catch((error) => {
+        console.error("Fetch error:",error);
+        this.setState(update(this.state, {
+          cards: {
+              $splice: [
+                [cardIndex, 1],
+                [this.movingCard.index, 0, this.movingCard.card]
+              ]
+            }
+          }));
+      });
+    }
+  }
+
   render() {
     return (
-      <KanbanBoard cards={this.state.cards} taskCallbacks={{
-           toggle: this.toggleTask.bind(this),
-           delete: this.deleteTask.bind(this),
-           add: this.addTask.bind(this) }} />
+      <KanbanBoard cards={this.state.cards}
+           taskCallbacks={{
+             toggle: this.toggleTask.bind(this),
+             delete: this.deleteTask.bind(this),
+             add: this.addTask.bind(this)
+           }}
+           cardCallbacks={{
+             updateStatus: this.updateCardStatus.bind(this),
+             updatePosition:this.updateCardPosition.bind(this),
+             prepareMove: this.prepareCardMove.bind(this),
+             persistMove: this.persistCardMove.bind(this)
+        }}
+      />
     )
   }
 }
