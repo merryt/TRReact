@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { DragDropContext } from 'react-dnd';
-import HTML5Backend from 'react-dnd/modules/backends/HTML5';
+import HTML5Backend from 'react-dnd-html5-backend';
 import List from './List';
 
 
