@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import RepoDetails from './RepoDetails';
 
 // first we import some components
 import { Router, Route, IndexRoute, Link } from 'react-router';
@@ -25,7 +26,8 @@ class App extends Component {
 }
 
 React.render((
-  <Router history={history}>
+  // <Router history={history}>
+  <Router>
     <Route path="/" component={App}>
       <IndexRoute component={Home}/>
       <Route path="about" component={About}/>
