@@ -19,9 +19,11 @@ class Repos extends Component {
     });
   }
 
-  render() {
+ render() {
     let repos = this.state.repositories.map((repo) => (
-      <li key={repo.id}>{repo.name}</li>
+      <li key={repo.id}>
+        <Link to={"/repos/details/"+repo.name}>{repo.name}</Link>
+      </li>
     ));
     return (
       <div>
@@ -33,6 +35,7 @@ class Repos extends Component {
       </div>
     );
   }
+
 }
 
 export default Repos;

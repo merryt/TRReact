@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
-import RepoDetails from './RepoDetails';
-
-// first we import some components
 import { Router, Route, IndexRoute, Link } from 'react-router';
 
 import About from './About';
-import Home from './Home';
+import RepoDetails from './RepoDetails';
 import Repos from './Repos';
+import Home from './Home';
 
 class App extends Component {
   render() {
@@ -15,8 +13,8 @@ class App extends Component {
         <header>App</header>
         <menu>
           <ul>
-            <li><Link to="/about">About</Link></li>
-            <li><Link to="/repos">Repos</Link></li>
+            <li><Link to="/about" activeClassName="active">About</Link></li>
+            <li><Link to="/repos" activeClassName="active">Repos</Link></li>
           </ul>
         </menu>
         {this.props.children}
@@ -25,14 +23,14 @@ class App extends Component {
   }
 }
 
+
 React.render((
   // <Router history={history}>
   <Router>
     <Route path="/" component={App}>
       <IndexRoute component={Home}/>
-      <Route path="about" component={About}/>
+      <Route path="about" component={About} title="About Us" />
       <Route path="repos" component={Repos}>
-        {/* Add the route, nested where we want the UI to nest */}
         <Route path="details/:repo_name" component={RepoDetails} />
       </Route>
     </Route>

@@ -13,7 +13,7 @@ class RepoDetails extends Component {
     let repo_name = props.params.repo_name;
 
     fetch('https://api.github.com/repos/pro-react/'+repo_name)
-		.then((response) => response.json())
+    .then((response) => response.json())
     .then((responseData) => {
       this.setState({repository:responseData});
     });
