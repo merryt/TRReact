@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import { Link, NavigationDecorator } from 'react-router';
 import 'whatwg-fetch';
-import { Link } from 'react-router';
+import 'babel-core/polyfill'
+
 
 
 class Repos extends Component {
@@ -11,31 +13,49 @@ class Repos extends Component {
     };
   }
 
-  componentDidMount(){
-    fetch('https://api.github.com/users/pro-react/repos')
-    .then((response) => response.json())
+componentDidMount(){
+    fetch('https://api.github.com/users/cassiozen/repos')
+    .then((response) => {
+      if(response.ok){
+        return response.json()
+      } else {
+        throw new Error("Server response wasn't OK")
+      }
+    })
     .then((responseData) => {
-      this.setState({repositories:responseData});
+      this.setState({repositories:responseData})
+    })
+    .catch((error) => {
+      this.props.history.pushState(null,'/error');
     });
   }
 
- render() {
+
+render() {
     let repos = this.state.repositories.map((repo) => (
       <li key={repo.id}>
-        <Link to={"/repos/details/"+repo.name}>{repo.name}</Link>
+        <Link to={"/repo/"+repo.name}>{repo.name}</Link>
       </li>
     ));
+
+    let child = this.props.children && React.cloneElement(this.props.children,
+      { repositories: this.state.repositories }
+    );
+
     return (
       <div>
       <h1>Github Repos</h1>
       <ul>
         {repos}
       </ul>
-      {this.props.children}
+        {child}
       </div>
     );
   }
-
 }
 
+
 export default Repos;
+
+// this should be here but seems to break things....
+//export default NavigationDecorator(Repos);

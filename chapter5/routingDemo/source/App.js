@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
-import { Router, Route, IndexRoute, Link } from 'react-router';
+import { Router, Route, Link, IndexRoute } from 'react-router';
 
 import About from './About';
-import RepoDetails from './RepoDetails';
 import Repos from './Repos';
+import RepoDetails from './RepoDetails';
 import Home from './Home';
+import ServerError from './ServerError';
+import 'babel-core/polyfill';
+
+
+
 
 class App extends Component {
   render() {
@@ -25,14 +30,14 @@ class App extends Component {
 
 
 React.render((
-  // <Router history={history}>
   <Router>
     <Route path="/" component={App}>
       <IndexRoute component={Home}/>
-      <Route path="about" component={About} title="About Us" />
+      <Route path="about" component={About} />
       <Route path="repos" component={Repos}>
-        <Route path="details/:repo_name" component={RepoDetails} />
+        <Route path="/repo/:repo_name" component={RepoDetails} />
       </Route>
+      <Route path="error" component={ServerError} />
     </Route>
   </Router>
 ), document.getElementById('app'));
